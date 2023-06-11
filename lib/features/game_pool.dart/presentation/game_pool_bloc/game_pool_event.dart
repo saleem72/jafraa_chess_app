@@ -11,6 +11,9 @@ abstract class GamePoolEvent extends Equatable {
       _SetSelected(piece: piece);
 
   factory GamePoolEvent.clearSelected() => _ClearSelected();
+
+  factory GamePoolEvent.squareTapped({required ChessCoordinate coordinate}) =>
+      _SquareTapped(coordinate: coordinate);
 }
 
 class _SetSelected extends GamePoolEvent {
@@ -25,3 +28,14 @@ class _SetSelected extends GamePoolEvent {
 }
 
 class _ClearSelected extends GamePoolEvent {}
+
+class _SquareTapped extends GamePoolEvent {
+  final ChessCoordinate coordinate;
+
+  const _SquareTapped({
+    required this.coordinate,
+  });
+
+  @override
+  List<Object> get props => [coordinate];
+}

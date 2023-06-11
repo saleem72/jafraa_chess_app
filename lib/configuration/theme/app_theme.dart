@@ -40,10 +40,10 @@ class _AppThemeColors {
   static const Color error90 = Color(0xFFFFDAD6);
   static const Color error100 = Color(0xFFFFFFFF);
 
-  static const Color neutral10 = Color(0xFF17191c);
-  static const Color neutral20 = Color(0xFF2A2D32);
-  static const Color neutral90 = Color(0xFFe3e5e8);
-  static const Color neutral95 = Color(0xFFf1f2f3);
+  static const Color neutral10 = Color(0xFF1a1a1a);
+  static const Color neutral20 = Color(0xFF333333);
+  static const Color neutral90 = Color(0xFFe6e6e6);
+  static const Color neutral95 = Color(0xFFf2f2f2);
   static const Color neutral99 = Color(0xFFffffff);
 
   static const Color neutralVariant30 = Color(0xFF4d5247);
@@ -115,7 +115,7 @@ const lightColorPalette = ColorScheme(
 final lightTheme = ThemeData(
   brightness: Brightness.light,
   colorScheme: lightColorPalette,
-  scaffoldBackgroundColor: _AppThemeColors.neutral95,
+  scaffoldBackgroundColor: _AppThemeColors.neutral90,
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.transparent,
     elevation: 0,

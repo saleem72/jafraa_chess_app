@@ -3,11 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jafraa_chess_app/configuration/extensions/build_context_extension.dart';
-import 'package:jafraa_chess_app/configuration/theme/colors.dart';
-import 'package:jafraa_chess_app/core/domain/models/chess_piece.dart';
 import 'package:jafraa_chess_app/core/presentation/blocs/app_theme_cubit/app_theme_cubit.dart';
-
-import '../../configuration/assets/chess_components.dart';
 
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});

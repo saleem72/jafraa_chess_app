@@ -1,22 +1,29 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 //
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:jafraa_chess_app/configuration/assets/chess_components.dart';
 
 import 'chess_coordinate.dart';
 import 'chess_piece_properties.dart';
 
-class ChessPiece {
+class ChessPiece extends Equatable {
   final ChessPieceType type;
   final ChessPieceColor color;
   final ChessCoordinate coordinate;
 
-  ChessPiece._({
+  const ChessPiece._({
     required this.type,
     required this.color,
     required this.coordinate,
   });
+
+  @override
+  List<Object?> get props => [type, color, coordinate];
+
+  ChessPiece moveTo(ChessCoordinate newCoordinate) {
+    return ChessPiece._(type: type, color: color, coordinate: newCoordinate);
+  }
 
   factory ChessPiece.pawn(
           {required ChessPieceColor color,
@@ -45,11 +52,11 @@ class ChessPiece {
         coordinate: coordinate,
       );
 
-  factory ChessPiece.pishop(
+  factory ChessPiece.bishop(
           {required ChessPieceColor color,
           required ChessCoordinate coordinate}) =>
       ChessPiece._(
-        type: ChessPieceType.pishop,
+        type: ChessPieceType.bishop,
         color: color,
         coordinate: coordinate,
       );
@@ -96,7 +103,7 @@ class ChessPiece {
         } else {
           return ChessIcons.newKnight;
         }
-      case ChessPieceType.pishop:
+      case ChessPieceType.bishop:
         if (color == ChessPieceColor.white) {
           return ChessIcons.newBishop;
         } else {

@@ -1,7 +1,6 @@
 //
 
 import 'package:flutter/material.dart';
-import 'package:jafraa_chess_app/core/domain/models/chess_piece.dart';
 
 import '../../../../configuration/theme/colors.dart';
 import '../../domain/helpers/chess_helper.dart';

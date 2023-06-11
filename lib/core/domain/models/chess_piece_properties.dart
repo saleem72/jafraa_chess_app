@@ -4,7 +4,7 @@ enum ChessPieceType {
   pawn,
   rock,
   knight,
-  pishop,
+  bishop,
   queen,
   king;
 }
@@ -12,4 +12,13 @@ enum ChessPieceType {
 enum ChessPieceColor {
   white,
   black;
+
+  ChessPieceColor get opposite {
+    switch (this) {
+      case ChessPieceColor.white:
+        return ChessPieceColor.black;
+      case ChessPieceColor.black:
+        return ChessPieceColor.white;
+    }
+  }
 }

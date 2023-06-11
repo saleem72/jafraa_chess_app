@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jafraa_chess_app/core/domain/models/chess_coordinate.dart';
+import 'package:jafraa_chess_app/features/game_pool.dart/domain/extensions/chess_piece_list_extension.dart';
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/helpers/chess_helper.dart';
 import 'package:jafraa_chess_app/features/game_pool.dart/presentation/game_pool_bloc/game_pool_bloc.dart';
 
@@ -43,13 +44,15 @@ class ChessPiecesView extends StatelessWidget {
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
-            if (piece != null) {
-              context
-                  .read<GamePoolBloc>()
-                  .add(GamePoolEvent.setSelected(piece: piece));
-            } else {
-              context.read<GamePoolBloc>().add(GamePoolEvent.clearSelected());
-            }
+            // if (piece != null) {
+            //   context
+            //       .read<GamePoolBloc>()
+            //       .add(GamePoolEvent.setSelected(piece: piece));
+            // } else {
+            //   context.read<GamePoolBloc>().add(GamePoolEvent.clearSelected());
+            // }
+            context.read<GamePoolBloc>().add(GamePoolEvent.squareTapped(
+                coordinate: ChessHelper.getCoordinate(index)));
           },
           child: AspectRatio(
             aspectRatio: 1,

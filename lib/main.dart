@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jafraa_chess_app/configuration/theme/app_theme.dart';
-import 'package:jafraa_chess_app/core/presentation/blocs/app_theme_cubit/app_theme_cubit.dart';
-import 'package:jafraa_chess_app/features/game_pool.dart/game_pool.dart';
-import 'package:jafraa_chess_app/features/game_pool.dart/presentation/game_pool_bloc/game_pool_bloc.dart';
-import 'package:jafraa_chess_app/features/landing_screen/landing_screen.dart';
+import 'configuration/theme/app_theme.dart';
+import 'core/presentation/blocs/app_theme_cubit/app_theme_cubit.dart';
+import 'features/game_pool.dart/game_pool.dart';
+import 'features/game_pool.dart/presentation/game_pool_bloc/game_pool_bloc.dart';
 
 //
 // <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
