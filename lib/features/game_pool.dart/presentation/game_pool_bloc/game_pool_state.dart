@@ -8,6 +8,7 @@ class GamePoolState extends Equatable {
     required this.possibleMoves,
     required this.whiteDeadPieces,
     required this.blackDeadPieces,
+    required this.whitePromote,
   });
 
   final List<ChessPiece> pieces;
@@ -15,6 +16,7 @@ class GamePoolState extends Equatable {
   final List<ChessCoordinate> possibleMoves;
   final List<ChessPiece> whiteDeadPieces;
   final List<ChessPiece> blackDeadPieces;
+  final bool whitePromote;
 
   @override
   List<Object?> get props => [
@@ -23,6 +25,7 @@ class GamePoolState extends Equatable {
         possibleMoves,
         blackDeadPieces,
         whiteDeadPieces,
+        whitePromote,
       ];
 
   factory GamePoolState.initial() => GamePoolState._(
@@ -31,6 +34,7 @@ class GamePoolState extends Equatable {
         possibleMoves: const [],
         whiteDeadPieces: const [],
         blackDeadPieces: const [],
+        whitePromote: false,
       );
 
   GamePoolState copyWith({
@@ -39,6 +43,7 @@ class GamePoolState extends Equatable {
     List<ChessCoordinate>? possibleMoves,
     List<ChessPiece>? whiteDeadPieces,
     List<ChessPiece>? blackDeadPieces,
+    bool? whitePromote,
   }) {
     return GamePoolState._(
       pieces: pieces ?? this.pieces,
@@ -46,6 +51,7 @@ class GamePoolState extends Equatable {
       possibleMoves: possibleMoves ?? this.possibleMoves,
       whiteDeadPieces: whiteDeadPieces ?? this.whiteDeadPieces,
       blackDeadPieces: blackDeadPieces ?? this.blackDeadPieces,
+      whitePromote: whitePromote ?? this.whitePromote,
     );
   }
 }

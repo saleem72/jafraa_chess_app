@@ -22,7 +22,9 @@ class ChessPiece extends Equatable {
   List<Object?> get props => [type, color, coordinate];
 
   ChessPiece moveTo(ChessCoordinate newCoordinate) {
-    return ChessPiece._(type: type, color: color, coordinate: newCoordinate);
+    final result =
+        ChessPiece._(type: type, color: color, coordinate: newCoordinate);
+    return result;
   }
 
   factory ChessPiece.pawn(

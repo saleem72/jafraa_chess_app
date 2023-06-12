@@ -1,7 +1,9 @@
 //
 
 import 'package:collection/collection.dart';
+import 'package:jafraa_chess_app/core/domain/models/chess_notations.dart';
 
+import '../../../../core/domain/models/castling_rights.dart';
 import '../../../../core/domain/models/chess_coordinate.dart';
 import '../../../../core/domain/models/chess_piece.dart';
 import '../../../../core/domain/models/chess_piece_properties.dart';
@@ -23,16 +25,41 @@ extension ChessPieceList on List<ChessPiece> {
     return file >= 0 && file < 8 && rank >= 1 && rank < 9;
   }
 
-  List<ChessCoordinate> possibleMove(ChessPiece piece,
-      {bool includeSameColorPieces = false}) {
+  List<ChessCoordinate> possibleMove(
+    ChessPiece piece, {
+    CastlingRights? castlingRights,
+    FileNotation? whiteLastPawnTowSquares,
+    FileNotation? blackLastPawnTowSquares,
+  }) {
+    return _validMoves(
+      piece,
+      castlingRights: castlingRights,
+      whiteLastPawnTowSquares: whiteLastPawnTowSquares,
+      blackLastPawnTowSquares: blackLastPawnTowSquares,
+    );
+  }
+
+  List<ChessCoordinate> _validMoves(
+    ChessPiece piece, {
+    bool includeSameColorPieces = false,
+    CastlingRights? castlingRights,
+    FileNotation? whiteLastPawnTowSquares,
+    FileNotation? blackLastPawnTowSquares,
+  }) {
     switch (piece.type) {
       case ChessPieceType.pawn:
         if (piece.color == ChessPieceColor.white) {
-          return whitePawnMoves(piece,
-              includeSameColorPieces: includeSameColorPieces);
+          return whitePawnMoves(
+            piece,
+            includeSameColorPieces: includeSameColorPieces,
+            blackLastPawnTowSquares: blackLastPawnTowSquares,
+          );
         } else {
-          return blackPawnMoves(piece,
-              includeSameColorPieces: includeSameColorPieces);
+          return blackPawnMoves(
+            piece,
+            includeSameColorPieces: includeSameColorPieces,
+            whiteLastPawnTowSquares: whiteLastPawnTowSquares,
+          );
         }
       case ChessPieceType.rock:
         return rockMoves(piece, includeSameColorPieces: includeSameColorPieces);
@@ -46,26 +73,44 @@ extension ChessPieceList on List<ChessPiece> {
         return queenMoves(piece,
             includeSameColorPieces: includeSameColorPieces);
       case ChessPieceType.king:
-        return kingMoves(piece, includeSameColorPieces: includeSameColorPieces);
+        return kingMoves(
+          piece,
+          includeSameColorPieces: includeSameColorPieces,
+          castlingRights: castlingRights,
+        );
     }
   }
 
-  List<ChessCoordinate> whitePawnMoves(ChessPiece piece,
-      {bool includeSameColorPieces = false}) {
+  List<ChessCoordinate> whitePawnMoves(
+    ChessPiece piece, {
+    bool includeSameColorPieces = false,
+    FileNotation? blackLastPawnTowSquares,
+  }) {
     final locator = WhitePawnMovesLocator();
     if (includeSameColorPieces) {
       return locator.supportedCoordinates(this, piece);
     }
-    return locator.locate(this, piece);
+    return locator.locate(
+      this,
+      piece,
+      blackLastPawnTowSquares: blackLastPawnTowSquares,
+    );
   }
 
-  List<ChessCoordinate> blackPawnMoves(ChessPiece piece,
-      {bool includeSameColorPieces = false}) {
+  List<ChessCoordinate> blackPawnMoves(
+    ChessPiece piece, {
+    bool includeSameColorPieces = false,
+    FileNotation? whiteLastPawnTowSquares,
+  }) {
     final locator = BlackPawnMovesLocator();
     if (includeSameColorPieces) {
       return locator.supportedCoordinates(this, piece);
     }
-    return locator.locate(this, piece);
+    return locator.locate(
+      this,
+      piece,
+      whiteLastPawnTowSquares: whiteLastPawnTowSquares,
+    );
   }
 
   List<ChessCoordinate> rockMoves(ChessPiece piece,
@@ -91,10 +136,14 @@ extension ChessPieceList on List<ChessPiece> {
   }
 
   List<ChessCoordinate> kingMoves(ChessPiece piece,
-      {bool includeSameColorPieces = false}) {
+      {bool includeSameColorPieces = false, CastlingRights? castlingRights}) {
     final locator = KingMovesLocator();
-    return locator.locate(this, piece,
-        includeSameColorPieces: includeSameColorPieces);
+    return locator.locate(
+      this,
+      piece,
+      includeSameColorPieces: includeSameColorPieces,
+      castlingRights: castlingRights,
+    );
   }
 
   List<ChessCoordinate> queenMoves(ChessPiece piece,
@@ -111,7 +160,7 @@ extension ChessPieceList on List<ChessPiece> {
       ChessCoordinate coordinate, ChessPieceColor color) {
     final pieces = where((element) => element.color == color).toList();
     for (final piece in pieces) {
-      final pieceOptions = possibleMove(piece, includeSameColorPieces: true);
+      final pieceOptions = _validMoves(piece, includeSameColorPieces: true);
       if (pieceOptions.contains(coordinate)) {
         return true;
       }

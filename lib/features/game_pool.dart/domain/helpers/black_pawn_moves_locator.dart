@@ -8,8 +8,11 @@ import '../../../../core/domain/models/chess_piece.dart';
 import '../../../../core/domain/models/chess_piece_properties.dart';
 
 class BlackPawnMovesLocator {
-  // TODO: 'en passant' in passing
-  List<ChessCoordinate> locate(List<ChessPiece> board, ChessPiece piece) {
+  List<ChessCoordinate> locate(
+    List<ChessPiece> board,
+    ChessPiece piece, {
+    FileNotation? whiteLastPawnTowSquares,
+  }) {
     bool blocked = false;
     final List<ChessCoordinate> result = [];
     // one square
@@ -53,6 +56,30 @@ class BlackPawnMovesLocator {
       final crossedPiece = board.atCoordinates(coordinate);
       if (crossedPiece != null && crossedPiece.color == ChessPieceColor.white) {
         result.add(coordinate);
+      }
+    }
+
+    if (piece.coordinate.rank == 4) {
+      int inPassingFile = -1;
+      final inPassingRank = piece.coordinate.rank - 1;
+      if (whiteLastPawnTowSquares?.value == piece.coordinate.file.value - 1) {
+        inPassingFile = piece.coordinate.file.value - 1;
+      } else if (whiteLastPawnTowSquares?.value ==
+          piece.coordinate.file.value + 1) {
+        inPassingFile = piece.coordinate.file.value + 1;
+      }
+
+      if (inPassingFile != -1) {
+        if (board.isOnBoard(
+          file: inPassingFile,
+          rank: inPassingRank,
+        )) {
+          final coordinate = ChessCoordinate(
+            file: FileNotation.fromValue(inPassingFile),
+            rank: inPassingRank,
+          );
+          result.add(coordinate);
+        }
       }
     }
 

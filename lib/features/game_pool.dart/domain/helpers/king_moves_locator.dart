@@ -1,5 +1,7 @@
 //
 
+import 'package:jafraa_chess_app/core/domain/models/castling_rights.dart';
+import 'package:jafraa_chess_app/core/domain/models/chess_piece_properties.dart';
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/extensions/chess_piece_list_extension.dart';
 
 import '../../../../core/domain/models/chess_coordinate.dart';
@@ -7,9 +9,8 @@ import '../../../../core/domain/models/chess_notations.dart';
 import '../../../../core/domain/models/chess_piece.dart';
 
 class KingMovesLocator {
-  // TODO: castling long & short
   List<ChessCoordinate> locate(List<ChessPiece> board, ChessPiece piece,
-      {bool includeSameColorPieces = false}) {
+      {bool includeSameColorPieces = false, CastlingRights? castlingRights}) {
     final List<ChessCoordinate> rawRessult = [];
     final file = piece.coordinate.file.value;
     final rank = piece.coordinate.rank;
@@ -193,6 +194,45 @@ class KingMovesLocator {
 
     final List<ChessCoordinate> result = [];
 
+    final castlingRank = piece.color == ChessPieceColor.white ? 1 : 8;
+    if (piece.coordinate.rank == castlingRank) {
+      if (castlingRights == CastlingRights.both ||
+          castlingRights == CastlingRights.long) {
+        final queenCoordinates =
+            ChessCoordinate(file: FileNotation.d, rank: castlingRank);
+        final queen = board.atCoordinates(queenCoordinates);
+
+        final bishopCoordinates =
+            ChessCoordinate(file: FileNotation.c, rank: castlingRank);
+        final bishop = board.atCoordinates(bishopCoordinates);
+
+        final knightCoordinates =
+            ChessCoordinate(file: FileNotation.b, rank: castlingRank);
+        final knight = board.atCoordinates(knightCoordinates);
+
+        if (queen == null && bishop == null && knight == null) {
+          rawRessult
+              .add(ChessCoordinate(file: FileNotation.c, rank: castlingRank));
+        }
+      }
+
+      if (castlingRights == CastlingRights.both ||
+          castlingRights == CastlingRights.short) {
+        final shortBishopCoordinates =
+            ChessCoordinate(file: FileNotation.f, rank: castlingRank);
+        final shortBishop = board.atCoordinates(shortBishopCoordinates);
+
+        final shortKnightCoordinates =
+            ChessCoordinate(file: FileNotation.g, rank: castlingRank);
+        final shortKnight = board.atCoordinates(shortKnightCoordinates);
+
+        if (shortBishop == null && shortKnight == null) {
+          rawRessult
+              .add(ChessCoordinate(file: FileNotation.g, rank: castlingRank));
+        }
+      }
+    }
+
     for (final coordinate in rawRessult) {
       final newBoard =
           board.map((e) => e == piece ? piece.moveTo(coordinate) : e).toList();
@@ -200,6 +240,7 @@ class KingMovesLocator {
         result.add(coordinate);
       }
     }
+
     return result;
   }
 }

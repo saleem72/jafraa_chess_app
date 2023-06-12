@@ -35,7 +35,32 @@ class GamePool extends StatelessWidget {
               )),
           const SizedBox(height: 16),
           const BlackDeadPiecesList(),
-          const Spacer(flex: 2),
+          const SizedBox(height: 16),
+
+          TextButton(
+            onPressed: () {
+              context.read<GamePoolBloc>().add(GamePoolEvent.resetBoard());
+            },
+            child: Container(
+              height: 56,
+              decoration: BoxDecoration(
+                color: context.colorScheme.primary,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: context.colorScheme.onPrimary,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  'Reset',
+                  style: context.textTheme.titleMedium?.copyWith(
+                    color: context.colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
         ],
       ),
     );
