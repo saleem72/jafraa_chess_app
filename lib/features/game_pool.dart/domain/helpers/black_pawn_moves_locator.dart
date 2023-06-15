@@ -3,7 +3,7 @@
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/extensions/chess_piece_list_extension.dart';
 
 import '../../../../core/domain/models/chess_coordinate.dart';
-import '../../../../core/domain/models/chess_notations.dart';
+import '../../../../core/domain/models/file_notation.dart';
 import '../../../../core/domain/models/chess_piece.dart';
 import '../../../../core/domain/models/chess_piece_properties.dart';
 
@@ -12,9 +12,10 @@ class BlackPawnMovesLocator {
     List<ChessPiece> board,
     ChessPiece piece, {
     FileNotation? whiteLastPawnTowSquares,
+    required bool onlyRaw,
   }) {
     bool blocked = false;
-    final List<ChessCoordinate> result = [];
+    final List<ChessCoordinate> rawResult = [];
     // one square
     final oneSquareFile = piece.coordinate.file.value;
     final oneSquareRank = piece.coordinate.rank - 1;
@@ -25,7 +26,7 @@ class BlackPawnMovesLocator {
       );
       final crossedPiece = board.atCoordinates(coordinate);
       if (crossedPiece == null) {
-        result.add(coordinate);
+        rawResult.add(coordinate);
       } else {
         blocked = true;
       }
@@ -41,7 +42,7 @@ class BlackPawnMovesLocator {
       );
       final crossedPiece = board.atCoordinates(coordinate);
       if (crossedPiece != null && crossedPiece.color == ChessPieceColor.white) {
-        result.add(coordinate);
+        rawResult.add(coordinate);
       }
     }
 
@@ -55,7 +56,7 @@ class BlackPawnMovesLocator {
       );
       final crossedPiece = board.atCoordinates(coordinate);
       if (crossedPiece != null && crossedPiece.color == ChessPieceColor.white) {
-        result.add(coordinate);
+        rawResult.add(coordinate);
       }
     }
 
@@ -78,13 +79,13 @@ class BlackPawnMovesLocator {
             file: FileNotation.fromValue(inPassingFile),
             rank: inPassingRank,
           );
-          result.add(coordinate);
+          rawResult.add(coordinate);
         }
       }
     }
 
     if (blocked) {
-      return result;
+      return rawResult;
     }
 
     // tow squares
@@ -96,10 +97,18 @@ class BlackPawnMovesLocator {
           file: FileNotation.fromValue(towSquaresFile),
           rank: towSquaresRank,
         );
-        result.add(coordinate);
+        rawResult.add(coordinate);
       }
     }
-    return result;
+
+    if (onlyRaw) {
+      return rawResult;
+    } else {
+      final result = board.safeToKing(rawResult, piece);
+      return result;
+    }
+
+    // return rawResult;
   }
 
   List<ChessCoordinate> supportedCoordinates(

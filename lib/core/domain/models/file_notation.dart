@@ -35,6 +35,13 @@ enum FileNotation {
     return FileNotation.values.firstWhere((element) => element.value == value);
   }
 
+  factory FileNotation.fromLetter(String letter) {
+    final temp = FileNotation.values
+        .firstWhere((element) => element.label == letter.toUpperCase());
+
+    return temp;
+  }
+
   int get value {
     switch (this) {
       case FileNotation.a:
@@ -55,4 +62,24 @@ enum FileNotation {
         return 7;
     }
   }
+  // potentialPieces
+
+  static const List<String> potentialFiles = [
+    'a',
+    'A',
+    'b',
+    'B',
+    'c',
+    'C',
+    'd',
+    'D',
+    'e',
+    'E',
+    'f',
+    'F',
+    'g',
+    'G',
+    'h',
+    'H',
+  ];
 }

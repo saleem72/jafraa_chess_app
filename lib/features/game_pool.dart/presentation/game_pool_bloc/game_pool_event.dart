@@ -107,3 +107,5 @@ class _SetWhitePromotedPiece extends GamePoolEvent {
 class _SetBlackPromotedPiece extends GamePoolEvent {}
 
 class _ResetBoard extends GamePoolEvent {}
+
+class _KingsChecks extends GamePoolEvent {}

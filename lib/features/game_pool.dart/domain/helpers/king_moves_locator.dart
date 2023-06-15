@@ -5,7 +5,7 @@ import 'package:jafraa_chess_app/core/domain/models/chess_piece_properties.dart'
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/extensions/chess_piece_list_extension.dart';
 
 import '../../../../core/domain/models/chess_coordinate.dart';
-import '../../../../core/domain/models/chess_notations.dart';
+import '../../../../core/domain/models/file_notation.dart';
 import '../../../../core/domain/models/chess_piece.dart';
 
 class KingMovesLocator {

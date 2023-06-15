@@ -1,6 +1,6 @@
 //
 
-import 'package:jafraa_chess_app/core/domain/models/chess_notations.dart';
+import 'package:jafraa_chess_app/core/domain/models/file_notation.dart';
 import 'package:jafraa_chess_app/core/domain/models/chess_piece.dart';
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/helpers/board_filler.dart';
 

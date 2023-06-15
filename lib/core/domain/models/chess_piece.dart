@@ -88,40 +88,40 @@ class ChessPiece extends Equatable {
     switch (type) {
       case ChessPieceType.pawn:
         if (color == ChessPieceColor.white) {
-          return ChessIcons.newPawn;
+          return ChessIcons.pawnWhite;
         } else {
-          return ChessIcons.newPawn;
+          return ChessIcons.pawnBlack;
         }
 
       case ChessPieceType.rock:
         if (color == ChessPieceColor.white) {
-          return ChessIcons.newRock;
+          return ChessIcons.rockWhite;
         } else {
-          return ChessIcons.newRock;
+          return ChessIcons.rockBlack;
         }
       case ChessPieceType.knight:
         if (color == ChessPieceColor.white) {
-          return ChessIcons.newKnight;
+          return ChessIcons.knightWhite;
         } else {
-          return ChessIcons.newKnight;
+          return ChessIcons.kingBlack;
         }
       case ChessPieceType.bishop:
         if (color == ChessPieceColor.white) {
-          return ChessIcons.newBishop;
+          return ChessIcons.pishopWhite;
         } else {
-          return ChessIcons.newBishop;
+          return ChessIcons.pishopBlack;
         }
       case ChessPieceType.queen:
         if (color == ChessPieceColor.white) {
-          return ChessIcons.newQueen;
+          return ChessIcons.queenWhite;
         } else {
-          return ChessIcons.newQueen;
+          return ChessIcons.queenBlack;
         }
       case ChessPieceType.king:
         if (color == ChessPieceColor.white) {
-          return ChessIcons.newKing;
+          return ChessIcons.kingWhite;
         } else {
-          return ChessIcons.newKing;
+          return ChessIcons.kingBlack;
         }
     }
   }

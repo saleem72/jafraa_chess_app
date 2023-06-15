@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jafraa_chess_app/configuration/assets/chess_components.dart';
 import 'package:jafraa_chess_app/configuration/extensions/build_context_extension.dart';
 import 'package:jafraa_chess_app/core/domain/models/chess_coordinate.dart';
+import 'package:jafraa_chess_app/core/domain/models/chess_piece_properties.dart';
 import 'package:jafraa_chess_app/core/domain/models/promoted_piece.dart';
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/extensions/chess_piece_list_extension.dart';
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/helpers/chess_helper.dart';
@@ -43,6 +44,13 @@ class ChessPiecesView extends StatelessWidget {
       itemCount: 64,
       itemBuilder: (context, index) {
         final piece = pieces.atIndex(index);
+        final isWhiteKing = piece?.type == ChessPieceType.king &&
+            piece?.color == ChessPieceColor.white;
+        final isBlackKing = piece?.type == ChessPieceType.king &&
+            piece?.color == ChessPieceColor.black;
+        final isWhiteThreat = isWhiteKing && state.isWhiteKingInThreate;
+        final isBlackThreat = isBlackKing && state.isBlackKingInThreate;
+
         final isItPossibleMove = state.possibleMoves.got(index);
         final coordinate = ChessHelper.getCoordinate(index);
         final isSelected = state.selectedPiece?.coordinate == coordinate;
@@ -68,6 +76,14 @@ class ChessPiecesView extends StatelessWidget {
             aspectRatio: 1,
             child: Stack(
               children: [
+                isBlackThreat || isWhiteThreat
+                    ? Container(
+                        decoration: BoxDecoration(
+                          // color: Colors.pink.withOpacity(0.4),
+                          border: Border.all(width: 4, color: Colors.red),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
                 Container(
                   margin: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
@@ -80,7 +96,6 @@ class ChessPiecesView extends StatelessWidget {
                       ? const SizedBox.shrink()
                       : Image.asset(
                           piece.icon,
-                          color: piece.realColor,
                         ),
                 ),
               ],
@@ -122,8 +137,7 @@ class ChessPiecesView extends StatelessWidget {
                         width: buttonSize,
                         height: buttonSize,
                         child: Image.asset(
-                          ChessIcons.newQueen,
-                          color: Colors.white,
+                          ChessIcons.queenWhite,
                         ),
                       ),
                     ),
@@ -140,8 +154,7 @@ class ChessPiecesView extends StatelessWidget {
                         width: buttonSize,
                         height: buttonSize,
                         child: Image.asset(
-                          ChessIcons.newRock,
-                          color: Colors.white,
+                          ChessIcons.rockWhite,
                         ),
                       ),
                     ),
@@ -158,8 +171,7 @@ class ChessPiecesView extends StatelessWidget {
                         width: buttonSize,
                         height: buttonSize,
                         child: Image.asset(
-                          ChessIcons.newBishop,
-                          color: Colors.white,
+                          ChessIcons.pishopWhite,
                         ),
                       ),
                     ),
@@ -176,8 +188,7 @@ class ChessPiecesView extends StatelessWidget {
                         width: buttonSize,
                         height: buttonSize,
                         child: Image.asset(
-                          ChessIcons.newKnight,
-                          color: Colors.white,
+                          ChessIcons.knightWhite,
                         ),
                       ),
                     ),

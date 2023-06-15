@@ -1,7 +1,7 @@
 //
 
 import '../../../../core/domain/models/chess_coordinate.dart';
-import '../../../../core/domain/models/chess_notations.dart';
+import '../../../../core/domain/models/file_notation.dart';
 import '../../../../core/domain/models/chess_piece.dart';
 import '../../../../core/domain/models/chess_piece_properties.dart';
 

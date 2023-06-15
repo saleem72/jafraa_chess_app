@@ -1,9 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 //
 
 import 'package:equatable/equatable.dart';
+
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/helpers/chess_helper.dart';
 
-import 'chess_notations.dart';
+import 'file_notation.dart';
 
 class ChessCoordinate extends Equatable {
   final FileNotation file;
@@ -12,6 +14,22 @@ class ChessCoordinate extends Equatable {
     required this.file,
     required this.rank,
   });
+
+  factory ChessCoordinate.fromString(String text) {
+    final coordinateFileStr = text[0];
+    FileNotation coordinateFile;
+    if (FileNotation.potentialFiles.contains(coordinateFileStr)) {
+      coordinateFile = FileNotation.fromLetter(coordinateFileStr);
+    } else {
+      coordinateFile = FileNotation.a;
+    }
+
+    final rank = int.parse(text[1]);
+    return ChessCoordinate(
+      file: coordinateFile,
+      rank: rank,
+    );
+  }
 
   @override
   List<Object?> get props => [file, rank];
@@ -30,6 +48,9 @@ class ChessCoordinate extends Equatable {
 
     return '';
   }
+
+  @override
+  String toString() => '${file.label}$rank';
 }
 
 extension ChessCoordinateList on List<ChessCoordinate> {

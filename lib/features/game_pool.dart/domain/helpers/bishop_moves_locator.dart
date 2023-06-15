@@ -3,13 +3,17 @@
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/extensions/chess_piece_list_extension.dart';
 
 import '../../../../core/domain/models/chess_coordinate.dart';
-import '../../../../core/domain/models/chess_notations.dart';
+import '../../../../core/domain/models/file_notation.dart';
 import '../../../../core/domain/models/chess_piece.dart';
 
 class BishopMovesLocator {
-  List<ChessCoordinate> locate(List<ChessPiece> board, ChessPiece piece,
-      {bool includeSameColorPieces = false}) {
-    final List<ChessCoordinate> result = [];
+  List<ChessCoordinate> locate(
+    List<ChessPiece> board,
+    ChessPiece piece, {
+    bool includeSameColorPieces = false,
+    required bool onlyRaw,
+  }) {
+    final List<ChessCoordinate> rawResult = [];
     final file = piece.coordinate.file.value;
     final rank = piece.coordinate.rank;
     int newFile = -1;
@@ -28,15 +32,15 @@ class BishopMovesLocator {
         if (crossedPiece != null) {
           if (crossedPiece.color == piece.color) {
             if (includeSameColorPieces) {
-              result.add(coordinate);
+              rawResult.add(coordinate);
             }
             break;
           } else {
-            result.add(coordinate);
+            rawResult.add(coordinate);
             break;
           }
         }
-        result.add(coordinate);
+        rawResult.add(coordinate);
         newFile--;
         newRank--;
       } else {
@@ -57,15 +61,15 @@ class BishopMovesLocator {
         if (crossedPiece != null) {
           if (crossedPiece.color == piece.color) {
             if (includeSameColorPieces) {
-              result.add(coordinate);
+              rawResult.add(coordinate);
             }
             break;
           } else {
-            result.add(coordinate);
+            rawResult.add(coordinate);
             break;
           }
         }
-        result.add(coordinate);
+        rawResult.add(coordinate);
         newFile++;
         newRank++;
       } else {
@@ -87,15 +91,15 @@ class BishopMovesLocator {
         if (crossedPiece != null) {
           if (crossedPiece.color == piece.color) {
             if (includeSameColorPieces) {
-              result.add(coordinate);
+              rawResult.add(coordinate);
             }
             break;
           } else {
-            result.add(coordinate);
+            rawResult.add(coordinate);
             break;
           }
         }
-        result.add(coordinate);
+        rawResult.add(coordinate);
         newFile--;
         newRank++;
       } else {
@@ -116,22 +120,26 @@ class BishopMovesLocator {
         if (crossedPiece != null) {
           if (crossedPiece.color == piece.color) {
             if (includeSameColorPieces) {
-              result.add(coordinate);
+              rawResult.add(coordinate);
             }
             break;
           } else {
-            result.add(coordinate);
+            rawResult.add(coordinate);
             break;
           }
         }
-        result.add(coordinate);
+        rawResult.add(coordinate);
         newFile++;
         newRank--;
       } else {
         break;
       }
     }
-
-    return result;
+    if (onlyRaw) {
+      return rawResult;
+    } else {
+      final result = board.safeToKing(rawResult, piece);
+      return result;
+    }
   }
 }

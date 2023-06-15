@@ -9,7 +9,7 @@ import 'package:jafraa_chess_app/features/game_pool.dart/domain/extensions/chess
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/helpers/chess_helper.dart';
 
 import '../../../../core/domain/models/chess_coordinate.dart';
-import '../../../../core/domain/models/chess_notations.dart';
+import '../../../../core/domain/models/file_notation.dart';
 import '../../../../core/domain/models/chess_piece.dart';
 
 part 'game_pool_event.dart';
@@ -17,8 +17,6 @@ part 'game_pool_state.dart';
 
 class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
   // TODO: check for king safty when castling;
-  // TODO: check if piece moved will that put king in danger;
-  // TODO: check if any king in check after every move;
 
   GamePoolBloc() : super(GamePoolState.initial()) {
     on<_SetSelected>(_onSetSelected);
@@ -33,12 +31,34 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
     on<_SetWhitePromotedPiece>(_onSetWhitePromotedPiece);
     on<_SetBlackPromotedPiece>(_onSetBlackPromotedPiece);
     on<_ResetBoard>(_onResetBoard);
+    on<_KingsChecks>(_onKingsChecks);
   }
 
   CastlingRights whiteCastlingRights = CastlingRights.both;
   CastlingRights blackCastlingRights = CastlingRights.both;
   FileNotation? whiteLastPawnTowSquares;
   FileNotation? blackLastPawnTowSquares;
+
+  _onKingsChecks(_KingsChecks event, Emitter<GamePoolState> emit) {
+    final whiteKing = state.pieces.firstWhere((element) =>
+        element.type == ChessPieceType.king &&
+        element.color == ChessPieceColor.white);
+    final blackKing = state.pieces.firstWhere((element) =>
+        element.type == ChessPieceType.king &&
+        element.color == ChessPieceColor.black);
+
+    final isWhiteKingInThreat = state.pieces.inThreat(whiteKing);
+
+    final isBlackKingInThreat = state.pieces.inThreat(blackKing);
+
+    emit(
+      state.copyWith(
+        selectedPiece: state.selectedPiece,
+        isBlackKingInThreate: isBlackKingInThreat,
+        isWhiteKingInThreate: isWhiteKingInThreat,
+      ),
+    );
+  }
 
   _onResetBoard(_ResetBoard event, Emitter<GamePoolState> emit) {
     whiteCastlingRights = CastlingRights.both;
@@ -76,6 +96,7 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
           ),
         );
         blackLastPawnTowSquares = null;
+        add(_KingsChecks());
         return;
       }
     }
@@ -123,6 +144,7 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
           ),
         );
         whiteLastPawnTowSquares = null;
+        add(_KingsChecks());
         return;
       }
     }
@@ -183,6 +205,8 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
     }
     whiteLastPawnTowSquares = null;
     blackLastPawnTowSquares = null;
+
+    add(_KingsChecks());
   }
 
   _onNormalMove(_NormalMove event, Emitter<GamePoolState> emit) {
@@ -224,7 +248,7 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
         ));
       }
     }
-    return;
+    add(_KingsChecks());
   }
 
   _onBlackLongCastle(_BlackLongCastle event, Emitter<GamePoolState> emit) {
@@ -249,6 +273,7 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
         possibleMoves: [],
       ),
     );
+    add(_KingsChecks());
   }
 
   _onBlackShortCastle(_BlackShortCastle event, Emitter<GamePoolState> emit) {
@@ -273,6 +298,7 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
         possibleMoves: [],
       ),
     );
+    add(_KingsChecks());
   }
 
   _onWhiteLongCastle(_WhiteLongCastle event, Emitter<GamePoolState> emit) {
@@ -297,6 +323,7 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
         possibleMoves: [],
       ),
     );
+    add(_KingsChecks());
   }
 
   _onWhiteShortCastle(_WhiteShortCastle event, Emitter<GamePoolState> emit) {
@@ -321,6 +348,7 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
         possibleMoves: [],
       ),
     );
+    add(_KingsChecks());
   }
 
   _onSquareTapped(_SquareTapped event, Emitter<GamePoolState> emit) {

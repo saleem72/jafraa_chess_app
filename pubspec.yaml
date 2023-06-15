@@ -61,7 +61,6 @@ flutter:
     - assets/icons/
     - assets/chess_components/
     - assets/fonts/
-    - assets/new_collection/
     
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
