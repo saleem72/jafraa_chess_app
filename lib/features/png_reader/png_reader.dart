@@ -1,10 +1,14 @@
 //
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jafraa_chess_app/configuration/assets/chess_components.dart';
 import 'package:jafraa_chess_app/configuration/extensions/build_context_extension.dart';
 import 'package:jafraa_chess_app/core/domain/models/chess_game.dart';
 import 'package:jafraa_chess_app/core/domain/models/chess_notation.dart';
+import 'package:jafraa_chess_app/features/game_pool.dart/presentation/game_pool_bloc/game_pool_bloc.dart';
+import 'package:jafraa_chess_app/features/png_reader/png_details.dart';
+import 'package:jafraa_chess_app/pngs/game1.dart';
 
 class PngReaderScreen extends StatefulWidget {
   const PngReaderScreen({super.key});
@@ -14,7 +18,7 @@ class PngReaderScreen extends StatefulWidget {
 }
 
 class _PngReaderScreenState extends State<PngReaderScreen> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void dispose() {
@@ -34,44 +38,140 @@ class _PngReaderScreenState extends State<PngReaderScreen> {
         },
         child: Column(
           children: [
-            const SizedBox(height: 44),
-            Expanded(
-              child: TextField(
-                controller: _controller,
-                style: context.textTheme.titleMedium?.copyWith(
-                  color: Colors.black87,
-                ),
-                maxLines: null,
-                decoration: InputDecoration(
-                  hintText: 'put your png here...',
-                  hintStyle: context.textTheme.titleMedium?.copyWith(
-                    color: Colors.black54,
+            const SizedBox(height: 24),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 56,
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () => context.navigator.pop(),
+                    icon: const Icon(Icons.arrow_back),
                   ),
-                  border: InputBorder.none,
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () => _controller.text = game1,
+                    child: Text(
+                      'G1',
+                      style: context.textTheme.titleMedium?.copyWith(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => _controller.text = game2,
+                    child: Text(
+                      'G2',
+                      style: context.textTheme.titleMedium?.copyWith(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: context.colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextField(
+                    controller: _controller,
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: context.colorScheme.onSecondaryContainer,
+                    ),
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      hintText: 'put your png here...',
+                      hintStyle: context.textTheme.titleMedium?.copyWith(
+                        color: context.colorScheme.onSecondaryContainer,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 44),
-            TextButton(
-              onPressed: () => _decode(_controller.text),
-              child: const Text('Decode'),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextButton(
+                onPressed: () => _decode(context, _controller.text),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                ),
+                child: Container(
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: context.colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Decode',
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: context.colorScheme.onSecondaryContainer,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
             ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
 
-  _decode(String value) {
-    // final text = value.trim();
-    // if (text.isNotEmpty) {
-    //   final list = NotationsList.fromString(text);
-    //   setState(() {
-    //     steps = list;
-    //   });
-    // }
+  _decode(BuildContext context, String value) {
+    if (value.trim().isEmpty) {
+      return;
+    }
 
     final game = ChessGame.fromString(value);
+    context.read<GamePoolBloc>().add(GamePoolEvent.resetBoard());
+    context.navigator
+        .push(MaterialPageRoute(builder: (context) => PNGDetails(game: game)));
+  }
+}
+
+class AppLargeButton extends StatelessWidget {
+  const AppLargeButton({
+    super.key,
+    required this.onTap,
+    required this.label,
+  });
+  final VoidCallback onTap;
+  final String label;
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onTap,
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero,
+      ),
+      child: Container(
+        height: 44,
+        decoration: BoxDecoration(
+          color: context.colorScheme.secondaryContainer,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: context.textTheme.titleMedium?.copyWith(
+            color: context.colorScheme.onSecondaryContainer,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -88,10 +188,11 @@ class ChessMoveUI extends StatelessWidget {
     return Card(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        width: double.maxFinite,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(step.line),
+            Text('Original: ${step.line}'),
             Text(step.whiteMove.toString()),
             Text(step.blackMove.toString()),
           ],

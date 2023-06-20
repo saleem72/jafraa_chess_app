@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 //
 
+import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:jafraa_chess_app/core/domain/extensions/string_extension.dart';
 import 'package:jafraa_chess_app/core/domain/models/chess_notation.dart';
 
@@ -14,22 +16,22 @@ enum ChessGamePropertyType {
   result,
   eco,
   whiteElo,
-  blackElo;
+  blackElo,
+  timeControl,
+  endTime,
+  termination;
 
   String get label {
     return toString().split('.').last.capitalize();
   }
 
-  factory ChessGamePropertyType.fromString(String text) {
-    if (text == 'ECO') {
-      return ChessGamePropertyType.eco;
-    }
-    return ChessGamePropertyType.values
-        .firstWhere((element) => element.label == text);
+  static ChessGamePropertyType? fromString(String text) {
+    return ChessGamePropertyType.values.firstWhereOrNull(
+        (element) => element.label.toLowerCase() == text.toLowerCase());
   }
 }
 
-class ChessGame {
+class ChessGame extends Equatable {
   final List<ChessNotation> notations;
   final String? event;
   final String? site;
@@ -41,8 +43,14 @@ class ChessGame {
   final String? eco;
   final String? whiteElo;
   final String? blackElo;
+  final String? timeControl;
+  final String? endTime;
+  final String? termination;
 
-  ChessGame({
+  @override
+  List<Object?> get props => [notations];
+
+  const ChessGame({
     required this.notations,
     this.event,
     this.site,
@@ -54,35 +62,63 @@ class ChessGame {
     this.eco,
     this.whiteElo,
     this.blackElo,
+    this.timeControl,
+    this.endTime,
+    this.termination,
   });
 
   static ChessGame fromString(String value) {
-    final text = value.replaceAll('\n', ' ');
+    // final text = value.replaceAll('\n', ' ');
+    String text = value.trim().replaceAll('\r', ' ').replaceAll('\n', ' ');
     const regStr = '[\\[].*[\\]]';
-    const moveRegStr = '1\\..*';
+
+    const moveRegStr = '[1\\.].*\n*.*';
     final regex = RegExp(regStr);
 
     final outcome = regex.allMatches(value);
 
     final details = outcome.map((e) => e.group(0)).whereType<String>().toList();
-    final properties = details.map((e) => ChessGameProperty.fromString(e));
-    for (final property in properties) {
-      print(property.toString());
-    }
+    final properties = details
+        .map((e) => ChessGameProperty.fromString(e))
+        .whereType<ChessGameProperty>()
+        .toList();
 
     final moveRegex = RegExp(moveRegStr);
-
+    for (final item in details) {
+      text = text.replaceAll(item, '');
+    }
+    text = text.trim();
     final movesOutcome = moveRegex.allMatches(text);
-    print('\n*********************************\n');
+
     final moveDetails =
         movesOutcome.map((e) => e.group(0)).whereType<String>().toList();
-    final list = NotationsList.fromString(moveDetails.first);
-    return ChessGame(notations: list);
+
+    List<ChessNotation> list = [];
+    if (moveDetails.isNotEmpty) {
+      list = NotationsList.fromString(moveDetails.first);
+    }
+
+    return ChessGame(
+      notations: list,
+      event: properties.valueFor(ChessGamePropertyType.event),
+      site: properties.valueFor(ChessGamePropertyType.site),
+      date: properties.valueFor(ChessGamePropertyType.date),
+      round: properties.valueFor(ChessGamePropertyType.round),
+      white: properties.valueFor(ChessGamePropertyType.white),
+      black: properties.valueFor(ChessGamePropertyType.black),
+      result: properties.valueFor(ChessGamePropertyType.result),
+      eco: properties.valueFor(ChessGamePropertyType.eco),
+      whiteElo: properties.valueFor(ChessGamePropertyType.whiteElo),
+      blackElo: properties.valueFor(ChessGamePropertyType.blackElo),
+      timeControl: properties.valueFor(ChessGamePropertyType.timeControl),
+      endTime: properties.valueFor(ChessGamePropertyType.endTime),
+      termination: properties.valueFor(ChessGamePropertyType.termination),
+    );
   }
 }
 
 class ChessGameProperty {
-  final ChessGamePropertyType type;
+  final ChessGamePropertyType? type;
   final String property;
   final String value;
 
@@ -98,13 +134,23 @@ class ChessGameProperty {
       return null;
     }
     // String text = value.removePrackets();
-    final frag = text.split(' ');
-    final property = frag[0];
-    final temp = frag[1].removeQuotation();
+    final frag = text.split('"');
+    if (frag.length != 3) {
+      return null;
+    }
+    final property = frag[0].trim();
+    final temp = frag[1].trim().removeQuotation();
     final type = ChessGamePropertyType.fromString(property);
     return ChessGameProperty(type: type, property: property, value: temp);
   }
 
   @override
-  String toString() => 'property: $property, ${type.label} value: $value';
+  String toString() =>
+      'property: $property, ${type?.label ?? ''} value: $value';
+}
+
+extension ChessGamePropertyList on List<ChessGameProperty> {
+  String? valueFor(ChessGamePropertyType type) {
+    return firstWhereOrNull((element) => element.type == type)?.value;
+  }
 }

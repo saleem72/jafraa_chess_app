@@ -8,12 +8,17 @@ import '../../../../configuration/assets/chess_components.dart';
 class OtherPlayer extends StatelessWidget {
   const OtherPlayer({
     super.key,
+    this.description,
+    required this.playerName,
   });
+
+  final String playerName;
+  final String? description;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 85,
+      height: 44,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: IntrinsicHeight(
         child: Row(
@@ -23,15 +28,16 @@ class OtherPlayer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12)),
               elevation: 4,
               child: Container(
-                width: 75,
-                height: 75,
+                // width: 30,
+                // height: 30,
                 decoration: BoxDecoration(
                   color: context.colorScheme.secondary,
                   borderRadius: BorderRadius.circular(12),
-                  image: const DecorationImage(
-                    image: AssetImage(AppAssets.boy),
-                  ),
+                  // image: const DecorationImage(
+                  //   image: AssetImage(AppAssets.boy),
+                  // ),
                 ),
+                child: Image.asset(AppAssets.boy),
               ),
             ),
             const SizedBox(width: 16),
@@ -47,12 +53,23 @@ class OtherPlayer extends StatelessWidget {
                   ),
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Hello friend, Hello friend, Hello friend, Hello friend, Hello friend, Hello friend, Hello friend, Hello friend, Hello friend, Hello friend, Hello friend, Hello friend, Hello friend, ',
-                    style: context.textTheme.bodyMedium
-                        ?.copyWith(color: context.colorScheme.onSecondary),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  child: Row(
+                    children: [
+                      Text(
+                        playerName,
+                        style: context.textTheme.bodyMedium
+                            ?.copyWith(color: context.colorScheme.onSecondary),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (description != null)
+                        Text(
+                          ' (${description!})',
+                          style: context.textTheme.bodyMedium?.copyWith(
+                              color: context.colorScheme.onSecondary
+                                  .withOpacity(0.6)),
+                        )
+                    ],
                   ),
                 ),
               ),

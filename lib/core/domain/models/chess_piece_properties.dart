@@ -8,7 +8,7 @@ enum ChessPieceType {
   queen,
   king;
 
-  factory ChessPieceType.fromString(String text) {
+  static ChessPieceType? fromString(String text) {
     switch (text[0]) {
       case 'P':
       case 'p':
@@ -30,11 +30,14 @@ enum ChessPieceType {
         return ChessPieceType.king;
 
       default:
-        return ChessPieceType.pawn;
+        return null;
     }
   }
 
   String get initial {
+    if (this == ChessPieceType.knight) {
+      return 'N';
+    }
     return toString().split('.').last[0].toUpperCase();
   }
 

@@ -11,6 +11,42 @@ import '../helpers/chess_helper.dart';
 import '../helpers/locators.dart';
 
 extension ChessPieceList on List<ChessPiece> {
+  ChessPiece? capablePiece(
+    ChessPiece piece,
+    ChessCoordinate coordinate, {
+    CastlingRights? castlingRights,
+  }) {
+    final possiblePieces =
+        where((e) => e.type == piece.type && e.color == piece.color).toList();
+
+    // print(possiblePieces);
+
+    if (possiblePieces.isNotEmpty) {
+      final List<ChessPiece> whoCanDoIt = [];
+
+      for (final possibility in possiblePieces) {
+        final availableMoves =
+            _validMoves(possibility, castlingRights: castlingRights);
+        if (availableMoves.contains(coordinate)) {
+          whoCanDoIt.add(possibility);
+        }
+      }
+
+      if (whoCanDoIt.isEmpty) {
+        return null;
+      } else if (whoCanDoIt.length == 1) {
+        return whoCanDoIt.first;
+      } else {
+        final temp = whoCanDoIt.firstWhereOrNull(
+            (element) => element.coordinate.file == piece.coordinate.file);
+
+        return temp;
+      }
+    } else {
+      return null;
+    }
+  }
+
   ChessPiece? atIndex(int index) {
     final coordinate = ChessHelper.getCoordinate(index);
 

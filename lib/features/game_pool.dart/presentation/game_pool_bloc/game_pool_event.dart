@@ -39,6 +39,9 @@ abstract class GamePoolEvent extends Equatable {
   factory GamePoolEvent.setBlackPromotedPiece() => _SetBlackPromotedPiece();
 
   factory GamePoolEvent.resetBoard() => _ResetBoard();
+
+  factory GamePoolEvent.doMove({required ChessMove move}) =>
+      _DoMove(move: move);
 }
 
 class _SetSelected extends GamePoolEvent {
@@ -63,6 +66,19 @@ class _SquareTapped extends GamePoolEvent {
 
   @override
   List<Object> get props => [coordinate];
+}
+
+class _MakeNormalMove extends GamePoolEvent {
+  final ChessPiece piece;
+  final ChessCoordinate coordinate;
+
+  const _MakeNormalMove({
+    required this.piece,
+    required this.coordinate,
+  });
+
+  @override
+  List<Object> get props => [piece, coordinate];
 }
 
 class _NormalMove extends GamePoolEvent {
@@ -109,3 +125,13 @@ class _SetBlackPromotedPiece extends GamePoolEvent {}
 class _ResetBoard extends GamePoolEvent {}
 
 class _KingsChecks extends GamePoolEvent {}
+
+class _DoMove extends GamePoolEvent {
+  final ChessMove move;
+  const _DoMove({
+    required this.move,
+  });
+
+  @override
+  List<Object> get props => [move];
+}

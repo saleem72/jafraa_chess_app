@@ -1,119 +1,62 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 //
 
-import 'package:jafraa_chess_app/core/domain/extensions/string_extension.dart';
+import 'package:equatable/equatable.dart';
+import 'package:jafraa_chess_app/core/domain/models/chess_piece_properties.dart';
 
 import 'chess_coordinate.dart';
 import 'file_notation.dart';
-import 'chess_piece_properties.dart';
+import 'notation_move.dart';
 
-class ChessMove {
+class ChessMove extends Equatable {
   final String line;
+  final int number;
   final ChessPieceType? type;
   final FileNotation? file;
   final ChessCoordinate coordinate;
+  final ChessPieceColor color;
+  final bool isCastling;
 
-  ChessMove._({
+  @override
+  List<Object?> get props => [
+        line,
+        number,
+        type,
+        file,
+        coordinate,
+        color,
+        isCastling,
+      ];
+
+  const ChessMove({
     required this.line,
+    required this.number,
     this.type,
     this.file,
     required this.coordinate,
+    required this.color,
+    required this.isCastling,
   });
 
-  factory ChessMove.empty() => ChessMove._(
-        line: '',
-        coordinate: const ChessCoordinate(file: FileNotation.a, rank: 1),
-      );
-
-  static ChessMove? fromString(String value) {
-    if (value == '1-0' || value == '0-1' || value == '0-0') {
-      return null;
-    }
-    String text = value.removePlus().replaceAll('#', '');
-
-    if (text == 'O-O') {
-      return ChessMove._(
-        line: text,
-        type: ChessPieceType.king,
-        coordinate: const ChessCoordinate(file: FileNotation.g, rank: 1),
-      );
-    }
-
-    if (text == 'O-O-O') {
-      return ChessMove._(
-        line: text,
-        type: ChessPieceType.king,
-        coordinate: const ChessCoordinate(file: FileNotation.c, rank: 1),
-      );
-    }
-    if (text.length == 2) {
-      return ChessMove._(
-        line: value,
-        coordinate: ChessCoordinate.fromString(text),
-      );
-    }
-
-    if (text.length == 3) {
-      final moveTypeStr = text[0];
-      final moveType = ChessPieceType.fromString(moveTypeStr);
-      final coordinate = ChessCoordinate.fromString(text.substring(1));
-      return ChessMove._(line: value, type: moveType, coordinate: coordinate);
-    }
-
-    if (text.length == 4) {
-      if (text.containX()) {
-        final moveTypeStr = text[0];
-        final moveType = ChessPieceType.fromString(moveTypeStr);
-        FileNotation? file;
-        if (FileNotation.potentialFiles.contains(text[0])) {
-          file = FileNotation.fromLetter(text[0]);
-        } else {
-          file = null;
-        }
-        final coordinate = ChessCoordinate.fromString(text.substring(2));
-        return ChessMove._(
-            line: value, type: moveType, file: file, coordinate: coordinate);
-      } else {
-        final moveTypeStr = text[0];
-        final moveType = ChessPieceType.fromString(moveTypeStr);
-        FileNotation? file;
-
-        if (FileNotation.potentialFiles.contains(text[1])) {
-          file = FileNotation.fromLetter(text[1]);
-        } else if (text[1] == 'x' || text[1] == 'X') {
-          file = null;
-        } else {
-          file = null;
-        }
-
-        final coordinate = ChessCoordinate.fromString(text.substring(2));
-        return ChessMove._(
-            line: value, type: moveType, file: file, coordinate: coordinate);
-      }
-    }
-
-    if (text.length == 5) {
-      final moveTypeStr = text[0];
-      final type = ChessPieceType.fromString(moveTypeStr);
-
-      final moveFileStr = text[1];
-      FileNotation? file;
-
-      if (FileNotation.potentialFiles.contains(moveFileStr)) {
-        file = FileNotation.fromLetter(moveFileStr);
-      } else {
-        file = null;
-      }
-
-      final coordinate = ChessCoordinate.fromString(text.substring(3));
-
-      return ChessMove._(
-          line: value, type: type, file: file, coordinate: coordinate);
-    }
-
-    return null;
+  factory ChessMove.fromNotation({
+    required NotationMove notation,
+    required int number,
+    required ChessPieceColor color,
+  }) {
+    return ChessMove(
+      line: notation.line,
+      number: number,
+      coordinate: notation.coordinate,
+      color: color,
+      type: notation.type,
+      file: notation.file,
+      isCastling: notation.isCastling,
+    );
   }
 
   @override
-  String toString() =>
-      '$line: ${(type?.initial ?? '')}${file?.label ?? ''}$coordinate';
+  String toString() {
+    // return '${type?.initial ?? ''}${file?.label ?? ''}$coordinate';
+    return line;
+  }
 }

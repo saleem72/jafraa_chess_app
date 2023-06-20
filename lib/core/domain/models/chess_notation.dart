@@ -1,14 +1,20 @@
 //
 
-import 'chess_move.dart';
+import 'package:equatable/equatable.dart';
+import 'package:jafraa_chess_app/core/domain/models/chess_piece_properties.dart';
 
-class ChessNotation {
+import 'notation_move.dart';
+
+class ChessNotation extends Equatable {
   final String line;
   final int number;
-  final ChessMove whiteMove;
-  final ChessMove blackMove;
+  final NotationMove whiteMove;
+  final NotationMove blackMove;
 
-  ChessNotation._({
+  @override
+  List<Object?> get props => [line, number, whiteMove, blackMove];
+
+  const ChessNotation._({
     required this.line,
     required this.number,
     required this.whiteMove,
@@ -44,10 +50,12 @@ class ChessNotation {
     return ChessNotation._(
       line: text,
       number: optionalNumber,
-      whiteMove: ChessMove.fromString(whiteMove) ?? ChessMove.empty(),
+      whiteMove: NotationMove.fromString(whiteMove, ChessPieceColor.white) ??
+          NotationMove.empty(),
       blackMove: blackMove == null
-          ? ChessMove.empty()
-          : ChessMove.fromString(blackMove) ?? ChessMove.empty(),
+          ? NotationMove.empty()
+          : NotationMove.fromString(blackMove, ChessPieceColor.black) ??
+              NotationMove.empty(),
     );
   }
 
@@ -57,10 +65,11 @@ class ChessNotation {
 
 extension NotationsList on List<ChessNotation> {
   static List<ChessNotation> fromString(String text) {
-    // const regString =
-    //     '\\d-\\d|[1-9][0-9]*.\\s\\S*\\s\\S*|[1-9][0-9]*.\\s\\S*|[1-9][0-9]*.\\S*\\s\\S*|[1-9][0-9]*.\\S*';
+    // (?<!\V(\d\/\d))(?<!\V(\d\/))
+    //[^1/2][^1/]
     const regString =
-        '[1-9][0-9]*\\.\\s*\\S*\\s*\\S*(?<!\\V(\\d-\\d))(?<!\\V(\\d-))(?<!\\V(\\s\\d))';
+        '[1-9][0-9]*\\.\\s*\\S*\\s*\\S*(?<!\\V(\\d-\\d))(?<!\\V(\\d-))(?<!\\V(\\s\\d))(?<!(1\\/2-?))(?<!(1\\/))(?<!(-1))(?<!(\\s*1\\s*))';
+
     final regex = RegExp(regString);
     final value = text.trim().replaceAll('\n', ' ');
 
@@ -68,10 +77,6 @@ extension NotationsList on List<ChessNotation> {
 
     final strSteps =
         regSteps.map((e) => e.group(0)).toList().whereType<String>().toList();
-
-    for (final step in strSteps) {
-      print(step);
-    }
 
     final steps = strSteps
         .map((e) => ChessNotation.fromItem(e))

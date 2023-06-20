@@ -12,7 +12,7 @@ class ChessPiece extends Equatable {
   final ChessPieceColor color;
   final ChessCoordinate coordinate;
 
-  const ChessPiece._({
+  const ChessPiece({
     required this.type,
     required this.color,
     required this.coordinate,
@@ -23,14 +23,14 @@ class ChessPiece extends Equatable {
 
   ChessPiece moveTo(ChessCoordinate newCoordinate) {
     final result =
-        ChessPiece._(type: type, color: color, coordinate: newCoordinate);
+        ChessPiece(type: type, color: color, coordinate: newCoordinate);
     return result;
   }
 
   factory ChessPiece.pawn(
           {required ChessPieceColor color,
           required ChessCoordinate coordinate}) =>
-      ChessPiece._(
+      ChessPiece(
         type: ChessPieceType.pawn,
         color: color,
         coordinate: coordinate,
@@ -39,7 +39,7 @@ class ChessPiece extends Equatable {
   factory ChessPiece.rock(
           {required ChessPieceColor color,
           required ChessCoordinate coordinate}) =>
-      ChessPiece._(
+      ChessPiece(
         type: ChessPieceType.rock,
         color: color,
         coordinate: coordinate,
@@ -48,7 +48,7 @@ class ChessPiece extends Equatable {
   factory ChessPiece.knight(
           {required ChessPieceColor color,
           required ChessCoordinate coordinate}) =>
-      ChessPiece._(
+      ChessPiece(
         type: ChessPieceType.knight,
         color: color,
         coordinate: coordinate,
@@ -57,7 +57,7 @@ class ChessPiece extends Equatable {
   factory ChessPiece.bishop(
           {required ChessPieceColor color,
           required ChessCoordinate coordinate}) =>
-      ChessPiece._(
+      ChessPiece(
         type: ChessPieceType.bishop,
         color: color,
         coordinate: coordinate,
@@ -66,7 +66,7 @@ class ChessPiece extends Equatable {
   factory ChessPiece.queen(
           {required ChessPieceColor color,
           required ChessCoordinate coordinate}) =>
-      ChessPiece._(
+      ChessPiece(
         type: ChessPieceType.queen,
         color: color,
         coordinate: coordinate,
@@ -75,7 +75,7 @@ class ChessPiece extends Equatable {
   factory ChessPiece.king(
           {required ChessPieceColor color,
           required ChessCoordinate coordinate}) =>
-      ChessPiece._(
+      ChessPiece(
         type: ChessPieceType.king,
         color: color,
         coordinate: coordinate,
@@ -103,7 +103,7 @@ class ChessPiece extends Equatable {
         if (color == ChessPieceColor.white) {
           return ChessIcons.knightWhite;
         } else {
-          return ChessIcons.kingBlack;
+          return ChessIcons.knightBlack;
         }
       case ChessPieceType.bishop:
         if (color == ChessPieceColor.white) {

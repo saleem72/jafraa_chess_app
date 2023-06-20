@@ -9,6 +9,7 @@ import 'package:jafraa_chess_app/features/game_pool.dart/domain/extensions/chess
 import 'package:jafraa_chess_app/features/game_pool.dart/domain/helpers/chess_helper.dart';
 
 import '../../../../core/domain/models/chess_coordinate.dart';
+import '../../../../core/domain/models/chess_move.dart';
 import '../../../../core/domain/models/file_notation.dart';
 import '../../../../core/domain/models/chess_piece.dart';
 
@@ -32,12 +33,109 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
     on<_SetBlackPromotedPiece>(_onSetBlackPromotedPiece);
     on<_ResetBoard>(_onResetBoard);
     on<_KingsChecks>(_onKingsChecks);
+    on<_DoMove>(_onDoMove);
+    on<_MakeNormalMove>(_onMakeNormalMove);
   }
 
   CastlingRights whiteCastlingRights = CastlingRights.both;
   CastlingRights blackCastlingRights = CastlingRights.both;
   FileNotation? whiteLastPawnTowSquares;
   FileNotation? blackLastPawnTowSquares;
+
+  _onMakeNormalMove(_MakeNormalMove event, Emitter<GamePoolState> emit) {
+    final crossPiece = state.pieces.atCoordinates(event.coordinate);
+
+    final newBoard = _internalMove(event.piece, event.coordinate);
+    // _checkForPawnTowSquareMove(state.selectedPiece!, event.coordinate);
+    // _checkForRockMove(state.selectedPiece!);
+    // _checkForKingMove(state.selectedPiece!);
+
+    // final newBoard = state.pieces
+    //     .map((e) => e == state.selectedPiece!
+    //         ? state.selectedPiece!.moveTo(event.coordinate)
+    //         : piece == e
+    //             ? null
+    //             : e)
+    //     .whereType<ChessPiece>()
+    //     .toList();
+
+    emit(
+      state.copyWith(
+        pieces: newBoard,
+        selectedPiece: null,
+        possibleMoves: [],
+      ),
+    );
+
+    if (crossPiece != null) {
+      if (crossPiece.color == ChessPieceColor.white) {
+        final newList = state.whiteDeadPieces.map((e) => e).toList();
+        newList.add(crossPiece);
+        emit(state.copyWith(
+          selectedPiece: null,
+          whiteDeadPieces: newList,
+        ));
+      } else {
+        final newList = state.blackDeadPieces.map((e) => e).toList();
+        newList.add(crossPiece);
+        emit(state.copyWith(
+          selectedPiece: null,
+          blackDeadPieces: newList,
+        ));
+      }
+    }
+    add(_KingsChecks());
+  }
+
+  _onDoMove(_DoMove event, Emitter<GamePoolState> emit) {
+    final move = event.move;
+    // print(move);
+    if (move.type == null) {
+      final target = ChessPiece.pawn(
+        color: move.color,
+        coordinate: move.file == null
+            ? move.coordinate
+            : ChessCoordinate(file: move.file!, rank: 1),
+      );
+      final pawn = state.pieces.capablePiece(target, move.coordinate);
+      if (pawn != null) {
+        add(_MakeNormalMove(piece: pawn, coordinate: move.coordinate));
+      }
+    } else if (move.type != null) {
+      final target = ChessPiece(
+          type: move.type!,
+          color: move.color,
+          coordinate: move.file == null
+              ? move.coordinate
+              : ChessCoordinate(file: move.file!, rank: 1));
+      final piece = state.pieces.capablePiece(
+        target,
+        move.coordinate,
+        castlingRights: move.color == ChessPieceColor.white
+            ? whiteCastlingRights
+            : blackCastlingRights,
+      );
+      if (piece != null) {
+        if (piece.type == ChessPieceType.king && move.isCastling) {
+          if (move.color == ChessPieceColor.white) {
+            if (move.coordinate.file == FileNotation.g) {
+              add(_WhiteShortCastle());
+            } else if (move.coordinate.file == FileNotation.b) {
+              add(_WhiteLongCastle());
+            }
+          } else {
+            if (move.coordinate.file == FileNotation.g) {
+              add(_BlackShortCastle());
+            } else if (move.coordinate.file == FileNotation.b) {
+              add(_BlackLongCastle());
+            }
+          }
+        } else {
+          add(_MakeNormalMove(piece: piece, coordinate: move.coordinate));
+        }
+      }
+    }
+  }
 
   _onKingsChecks(_KingsChecks event, Emitter<GamePoolState> emit) {
     final whiteKing = state.pieces.firstWhere((element) =>
@@ -209,19 +307,42 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
     add(_KingsChecks());
   }
 
-  _onNormalMove(_NormalMove event, Emitter<GamePoolState> emit) {
-    final piece = state.pieces.atCoordinates(event.coordinate);
-    _checkForPawnTowSquareMove(state.selectedPiece!, event.coordinate);
-    _checkForRockMove(state.selectedPiece!);
-    _checkForKingMove(state.selectedPiece!);
+  List<ChessPiece> _internalMove(ChessPiece piece, ChessCoordinate coordinate,
+      {bool doChecks = false}) {
+    final crossPiece = state.pieces.atCoordinates(coordinate);
+    if (doChecks) {
+      _checkForPawnTowSquareMove(piece, coordinate);
+      _checkForRockMove(piece);
+      _checkForKingMove(piece);
+    }
     final newBoard = state.pieces
-        .map((e) => e == state.selectedPiece!
-            ? state.selectedPiece!.moveTo(event.coordinate)
-            : piece == e
+        .map((e) => e == piece
+            ? piece.moveTo(coordinate)
+            : crossPiece == e
                 ? null
                 : e)
         .whereType<ChessPiece>()
         .toList();
+
+    return newBoard;
+  }
+
+  _onNormalMove(_NormalMove event, Emitter<GamePoolState> emit) {
+    final crossPiece = state.pieces.atCoordinates(event.coordinate);
+
+    final newBoard = _internalMove(state.selectedPiece!, event.coordinate);
+    // _checkForPawnTowSquareMove(state.selectedPiece!, event.coordinate);
+    // _checkForRockMove(state.selectedPiece!);
+    // _checkForKingMove(state.selectedPiece!);
+
+    // final newBoard = state.pieces
+    //     .map((e) => e == state.selectedPiece!
+    //         ? state.selectedPiece!.moveTo(event.coordinate)
+    //         : piece == e
+    //             ? null
+    //             : e)
+    //     .whereType<ChessPiece>()
+    //     .toList();
 
     emit(
       state.copyWith(
@@ -231,17 +352,17 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
       ),
     );
 
-    if (piece != null) {
-      if (piece.color == ChessPieceColor.white) {
+    if (crossPiece != null) {
+      if (crossPiece.color == ChessPieceColor.white) {
         final newList = state.whiteDeadPieces.map((e) => e).toList();
-        newList.add(piece);
+        newList.add(crossPiece);
         emit(state.copyWith(
           selectedPiece: null,
           whiteDeadPieces: newList,
         ));
       } else {
         final newList = state.blackDeadPieces.map((e) => e).toList();
-        newList.add(piece);
+        newList.add(crossPiece);
         emit(state.copyWith(
           selectedPiece: null,
           blackDeadPieces: newList,
@@ -255,16 +376,20 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
     const rockCoordinates = ChessCoordinate(file: FileNotation.a, rank: 8);
     final rock = state.pieces.atCoordinates(rockCoordinates);
     const kingCoordinates = ChessCoordinate(file: FileNotation.c, rank: 8);
+
+    final king = state.pieces.firstWhere((element) =>
+        element.type == ChessPieceType.king &&
+        element.color == ChessPieceColor.black);
     final newBoard = state.pieces
-        .map((e) => e == state.selectedPiece!
-            ? state.selectedPiece!.moveTo(kingCoordinates)
+        .map((e) => e == king
+            ? king.moveTo(kingCoordinates)
             : rock == e
                 ? rock!.moveTo(
                     const ChessCoordinate(file: FileNotation.d, rank: 8))
                 : e)
         .whereType<ChessPiece>()
         .toList();
-    whiteCastlingRights = CastlingRights.none;
+    blackCastlingRights = CastlingRights.none;
     whiteLastPawnTowSquares = null;
     emit(
       state.copyWith(
@@ -280,16 +405,19 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
     const rockCoordinates = ChessCoordinate(file: FileNotation.h, rank: 8);
     final rock = state.pieces.atCoordinates(rockCoordinates);
     const kingCoordinates = ChessCoordinate(file: FileNotation.g, rank: 8);
+    final king = state.pieces.firstWhere((element) =>
+        element.type == ChessPieceType.king &&
+        element.color == ChessPieceColor.black);
     final newBoard = state.pieces
-        .map((e) => e == state.selectedPiece!
-            ? state.selectedPiece!.moveTo(kingCoordinates)
+        .map((e) => e == king
+            ? king.moveTo(kingCoordinates)
             : rock == e
                 ? rock!.moveTo(
                     const ChessCoordinate(file: FileNotation.f, rank: 8))
                 : e)
         .whereType<ChessPiece>()
         .toList();
-    whiteCastlingRights = CastlingRights.none;
+    blackCastlingRights = CastlingRights.none;
     whiteLastPawnTowSquares = null;
     emit(
       state.copyWith(
@@ -305,9 +433,12 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
     const rockCoordinates = ChessCoordinate(file: FileNotation.a, rank: 1);
     final rock = state.pieces.atCoordinates(rockCoordinates);
     const kingCoordinates = ChessCoordinate(file: FileNotation.c, rank: 1);
+    final king = state.pieces.firstWhere((element) =>
+        element.type == ChessPieceType.king &&
+        element.color == ChessPieceColor.white);
     final newBoard = state.pieces
-        .map((e) => e == state.selectedPiece!
-            ? state.selectedPiece!.moveTo(kingCoordinates)
+        .map((e) => e == king
+            ? king.moveTo(kingCoordinates)
             : rock == e
                 ? rock!.moveTo(
                     const ChessCoordinate(file: FileNotation.d, rank: 1))
@@ -330,9 +461,12 @@ class GamePoolBloc extends Bloc<GamePoolEvent, GamePoolState> {
     const rockCoordinates = ChessCoordinate(file: FileNotation.h, rank: 1);
     final rock = state.pieces.atCoordinates(rockCoordinates);
     const kingCoordinates = ChessCoordinate(file: FileNotation.g, rank: 1);
+    final king = state.pieces.firstWhere((element) =>
+        element.type == ChessPieceType.king &&
+        element.color == ChessPieceColor.white);
     final newBoard = state.pieces
-        .map((e) => e == state.selectedPiece!
-            ? state.selectedPiece!.moveTo(kingCoordinates)
+        .map((e) => e == king
+            ? king.moveTo(kingCoordinates)
             : rock == e
                 ? rock!.moveTo(
                     const ChessCoordinate(file: FileNotation.f, rank: 1))

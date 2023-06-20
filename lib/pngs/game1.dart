@@ -1,7 +1,41 @@
 //
 
-const game1 =
-    '1. d4 Nf6 2. Nf3 d5 3. e3 Bf5 4. c4 c6 5. Nc3 e6 6. Bd3 Bxd3 7. Qxd3 Nbd7 8. b3 Bd6 9. O-O O-O 10. Bb2 Qe7 11. Rad1 Rad8 12. Rfe1 dxc4 13. bxc4 e5 14. dxe5 Nxe5 15. Nxe5 Bxe5 16. Qe2 Rxd1 17. Rxd1 Rd8 18. Rxd8+ Qxd8 19. Qd1 Qxd1+ 20. Nxd1 Bxb2 21. Nxb2 b5 22. f3 Kf8 23. Kf2';
+const game1 = '''
+[Event "Live Chess"]
+[Site "Chess.com"]
+[Date "2023.06.13"]
+[Round "?"]
+[White "Ryljin"]
+[Black "salaams"]
+[Result "1-0"]
+[ECO "B10"]
+[WhiteElo "1344"]
+[BlackElo "1308"]
+[TimeControl "600"]
+[EndTime "6:53:04 PDT"]
+[Termination "Ryljin won by checkmate"]
 
-const game2 =
-    '1.d4 e6 2.Nf3 Nf6 3.Bf4 d5 4.e3 Bd6 5.Bg3 O-O 6.Bd3 Ne4 7.Bxe4 dxe4 8.Nfd2 f5 9.O-O Nc6 10.Bxd6 cxd6 11.Nc3 d5 12.f4 b6 13.a3 Ba6 14.Rf2 Rc8 15.Nf1 Na5 16.Qe1 Qh4 17.g3 Qe7 18.Nd1 Rc7 19.b4 Nc4 20.a4 Bc8 21.c3 Bd7 22.Nd2 Rfc8 23.Rg2 Be8 24.Nxc4 Rxc4 25.h3 Kh8 26.a5 b5 27.Raa2 Bd7 28.Raf2 R4c7 29.Rh2 Rg8 30.h4 h5 31.Rc2 Rgc8 32.Qe2 Be8 33.Rf2';
+1. e4 c6 2. Nf3 d5 3. d3 dxe4 4. Ng5 exd3 5. Bxd3 Nf6 6. O-O h6 7. Nf3 Bg4 8.
+Nbd2 e6 9. b3 Be7 10. Bb2 O-O 11. Qe1 Bf5 12. Bxf5 exf5 13. Qe5 Re8 14. Qxf5 Na6
+15. Rfe1 Nc7 16. Ne4 Ncd5 17. Nxf6+ Nxf6 18. Re2 g6 19. Qf4 h5 20. Rae1 Nd5 21.
+Qh6 Bf8 22. Qh8# 1-0
+''';
+
+const game2 = '''
+[Event "St Petersburg prel"]
+[Site "St Petersburg"]
+[Date "1914.??.??"]
+[Round "?"]
+[White "Rubinstein, Akiba"]
+[Black "Nimzowitsch, Aaron "]
+[Result "1/2-1/2"]
+[WhiteElo ""]
+[BlackElo ""]
+[ECO "A46"]
+
+1.d4 Nf6 2.Nf3 e6 3.Bf4 c5 4.c3 cxd4 5.Nxd4 Nc6 6.e3 d5 7.Nd2 Bd6 8.Nb5 Bb8
+9.Bxb8 Rxb8 10.Be2 a6 11.Nd4 e5 12.N4b3 Bf5 13.O-O O-O 14.Bf3 Qe7 15.Qe1 Bd3
+16.Be2 Bg6 17.f4 exf4 18.exf4 Be4 19.Qf2 Rfe8 20.Rfe1 Qc7 21.Nc5 Re7 22.Nf1 Rbe8
+23.Ng3 g6 24.Rad1 h5 25.h4 Qc8 26.Ngxe4 dxe4 27.Rd6 Kg7 28.Red1 Ng4 29.Qg3 Nh6
+30.Qg5 Qf5  1/2-1/2
+''';
