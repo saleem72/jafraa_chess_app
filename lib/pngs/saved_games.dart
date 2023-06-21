@@ -1,6 +1,9 @@
 //
 
-const game1 = '''
+class SavedGames {
+  SavedGames._();
+
+  static const game1 = '''
 [Event "Live Chess"]
 [Site "Chess.com"]
 [Date "2023.06.13"]
@@ -21,7 +24,7 @@ Nbd2 e6 9. b3 Be7 10. Bb2 O-O 11. Qe1 Bf5 12. Bxf5 exf5 13. Qe5 Re8 14. Qxf5 Na6
 Qh6 Bf8 22. Qh8# 1-0
 ''';
 
-const game2 = '''
+  static const game2 = '''
 [Event "St Petersburg prel"]
 [Site "St Petersburg"]
 [Date "1914.??.??"]
@@ -39,3 +42,4 @@ const game2 = '''
 23.Ng3 g6 24.Rad1 h5 25.h4 Qc8 26.Ngxe4 dxe4 27.Rd6 Kg7 28.Red1 Ng4 29.Qg3 Nh6
 30.Qg5 Qf5  1/2-1/2
 ''';
+}
