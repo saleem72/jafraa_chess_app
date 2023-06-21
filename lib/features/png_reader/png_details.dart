@@ -6,7 +6,9 @@ import 'package:jafraa_chess_app/configuration/extensions/build_context_extensio
 import 'package:jafraa_chess_app/core/domain/models/chess_game.dart';
 import 'package:jafraa_chess_app/features/game_pool.dart/presentation/game_pool_bloc/game_pool_bloc.dart';
 import 'package:jafraa_chess_app/features/game_pool.dart/presentation/widgets/game_pool_widgets.dart';
+import 'package:jafraa_chess_app/features/game_pool.dart/presentation/widgets/png_view.dart';
 
+import '../game_pool.dart/presentation/widgets/board_background.dart';
 import 'presentation/notations_list_bloc/notations_list_bloc.dart';
 import 'presentation/widgets/notations_list_ui.dart';
 import 'presentation/widgets/png_reader_tool_bar.dart';
@@ -68,7 +70,15 @@ class _PNGDetailsContentState extends State<PNGDetailsContent> {
           const WhiteDeadPiecesList(),
           const SizedBox(height: 8),
           // myWidget(context),
-          const ChessBoard(),
+          SizedBox(
+            height: context.mediaQuery.size.width,
+            child: Stack(
+              children: const [
+                BoardBackground(),
+                PNGView(),
+              ],
+            ),
+          ),
           const SizedBox(height: 8),
           const BlackDeadPiecesList(),
           const SizedBox(height: 8),
@@ -87,17 +97,26 @@ class _PNGDetailsContentState extends State<PNGDetailsContent> {
       child: PNGReaderToolBar(
         onEnd: () => context.navigator.pop(),
         onReload: () => _reload(context),
-        onBackMove: () {},
-        onNextMove: () => _doMove(context),
+        onBackMove: () => _previousMove(context),
+        onNextMove: () => _nextMove(context),
       ),
     );
   }
 
-  _doMove(BuildContext context) {
+  _nextMove(BuildContext context) {
     final move = context.read<NotationsListBloc>().nextMove();
     if (move != null) {
-      context.read<GamePoolBloc>().add(GamePoolEvent.doMove(move: move));
+      _controller.animateTo(
+        context.read<NotationsListBloc>().offsetFor(move),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.ease,
+      );
+    }
+  }
 
+  _previousMove(BuildContext context) {
+    final move = context.read<NotationsListBloc>().previousMove();
+    if (move != null) {
       _controller.animateTo(
         context.read<NotationsListBloc>().offsetFor(move),
         duration: const Duration(milliseconds: 200),

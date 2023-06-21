@@ -22,6 +22,7 @@ class ChessNotation extends Equatable {
   });
 
   static ChessNotation? fromItem(String text) {
+    // print(text);
     String value = text;
 
     List<String> steps = [];
@@ -67,8 +68,9 @@ extension NotationsList on List<ChessNotation> {
   static List<ChessNotation> fromString(String text) {
     // (?<!\V(\d\/\d))(?<!\V(\d\/))
     //[^1/2][^1/]
-    const regString =
-        '[1-9][0-9]*\\.\\s*\\S*\\s*\\S*(?<!\\V(\\d-\\d))(?<!\\V(\\d-))(?<!\\V(\\s\\d))(?<!(1\\/2-?))(?<!(1\\/))(?<!(-1))(?<!(\\s*1\\s*))';
+    // const regString =
+    //     '[1-9][0-9]*\\.\\s*\\S*\\s*\\S*(?<!\\V(\\d-\\d))(?<!\\V(\\d-))(?<!\\V(\\s\\d))(?<!(1\\/2-?))(?<!(1\\/))(?<!(-1))(?<!(\\s*1\\s*))';
+    const regString = '[1-9][0-9]*\\.\\s*\\S*\\s*\\S*';
 
     final regex = RegExp(regString);
     final value = text.trim().replaceAll('\n', ' ');

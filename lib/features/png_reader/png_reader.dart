@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jafraa_chess_app/configuration/extensions/build_context_extension.dart';
+import 'package:jafraa_chess_app/configuration/routing/app_screen.dart';
 import 'package:jafraa_chess_app/core/domain/models/chess_game.dart';
 import 'package:jafraa_chess_app/core/domain/models/chess_notation.dart';
 import 'package:jafraa_chess_app/features/game_pool.dart/presentation/game_pool_bloc/game_pool_bloc.dart';
-import 'package:jafraa_chess_app/features/png_reader/png_details.dart';
 import 'package:jafraa_chess_app/features/png_reader/presentation/widgets/app_large_button.dart';
 import 'package:jafraa_chess_app/pngs/saved_games.dart';
 
@@ -84,7 +84,7 @@ class _PngReaderScreenState extends State<PngReaderScreen> {
           ),
           const Spacer(),
           TextButton(
-            onPressed: () => _controller.text = SavedGames.game1,
+            onPressed: () => _controller.text = SavedGames.game3,
             child: Text(
               'G1',
               style: context.textTheme.titleMedium?.copyWith(
@@ -110,10 +110,8 @@ class _PngReaderScreenState extends State<PngReaderScreen> {
     if (value.trim().isEmpty) {
       return;
     }
-
     final game = ChessGame.fromString(value);
     context.read<GamePoolBloc>().add(GamePoolEvent.resetBoard());
-    context.navigator
-        .push(MaterialPageRoute(builder: (context) => PNGDetails(game: game)));
+    context.navigator.pushNamed(AppScreen.pngDetails, arguments: game);
   }
 }

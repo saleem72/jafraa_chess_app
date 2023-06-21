@@ -6,11 +6,13 @@ class NotationsListState extends Equatable {
     required this.game,
     required this.moves,
     required this.selectedMove,
+    required this.boards,
   });
 
   final ChessGame game;
   final List<ChessMove> moves;
   final int selectedMove;
+  final List<List<ChessPiece>> boards;
 
   @override
   List<Object> get props => [game, moves, selectedMove];
@@ -33,7 +35,17 @@ class NotationsListState extends Equatable {
       list.add(white);
       list.add(black);
     }
-    return NotationsListState(game: game, moves: list, selectedMove: -1);
+
+    final GameResolver resolver = GameResolver();
+    final List<List<ChessPiece>> newBoards = [];
+    for (final move in list) {
+      resolver.onDoMove(move);
+      final board = resolver.toState().pieces;
+      newBoards.add(board);
+    }
+
+    return NotationsListState(
+        game: game, moves: list, selectedMove: -1, boards: newBoards);
   }
 
   NotationsListState copyWith({
@@ -43,6 +55,7 @@ class NotationsListState extends Equatable {
       game: game,
       moves: moves,
       selectedMove: selectedMove ?? this.selectedMove,
+      boards: boards,
     );
   }
 }

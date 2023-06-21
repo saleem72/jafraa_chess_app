@@ -6,6 +6,8 @@ import 'package:jafraa_chess_app/configuration/extensions/build_context_extensio
 import 'package:jafraa_chess_app/configuration/routing/app_screen.dart';
 import 'package:jafraa_chess_app/core/presentation/blocs/app_theme_cubit/app_theme_cubit.dart';
 
+import '../game_pool.dart/presentation/game_pool_bloc/game_pool_bloc.dart';
+
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});
   void toggleThemeMode(BuildContext context) {
@@ -32,7 +34,10 @@ class LandingScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             AppButton(
-              onTap: () => context.navigator.pushNamed(AppScreen.gamePool),
+              onTap: () {
+                context.read<GamePoolBloc>().add(GamePoolEvent.resetBoard());
+                return context.navigator.pushNamed(AppScreen.gamePool);
+              },
               label: 'Game pool',
             ),
           ],

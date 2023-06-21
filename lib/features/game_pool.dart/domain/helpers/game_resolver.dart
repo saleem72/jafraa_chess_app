@@ -9,9 +9,11 @@ import '../../../../core/domain/models/chess_piece.dart';
 import '../../../../core/domain/models/chess_piece_properties.dart';
 import '../../../../core/domain/models/file_notation.dart';
 import '../../../../core/domain/models/promoted_piece.dart';
+import '../../presentation/game_pool_bloc/game_pool_bloc.dart';
+import 'chess_helper.dart';
 
 class GameResolver {
-  List<ChessPiece> _pieces = [];
+  List<ChessPiece> _pieces = ChessHelper.initialPieces();
   ChessPiece? _selectedPiece;
   List<ChessCoordinate> _possibleMoves = [];
   List<ChessPiece> _whiteDeadPieces = [];
@@ -24,6 +26,17 @@ class GameResolver {
   CastlingRights _blackCastlingRights = CastlingRights.both;
   FileNotation? _whiteLastPawnTowSquares;
   FileNotation? _blackLastPawnTowSquares;
+
+  GamePoolState toState() => GamePoolState(
+        pieces: _pieces,
+        selectedPiece: _selectedPiece,
+        possibleMoves: _possibleMoves,
+        whiteDeadPieces: _whiteDeadPieces,
+        blackDeadPieces: _blackDeadPieces,
+        whitePromote: whitePromote,
+        isBlackKingInThreate: isBlackKingInThreate,
+        isWhiteKingInThreate: isWhiteKingInThreate,
+      );
 
   onSquareTapped(ChessCoordinate coordinate) {
     final piece = _pieces.atCoordinates(coordinate);
@@ -428,7 +441,7 @@ class GameResolver {
     _onKingsChecks();
   }
 
-  _onDoMove(ChessMove move) {
+  onDoMove(ChessMove move) {
     // print(move);
     if (move.type == null) {
       final target = ChessPiece.pawn(
@@ -504,7 +517,7 @@ class GameResolver {
     }
   }
 
-  _onSetWhitePromotedPiece(PromotedPiece promotedPiece) {
+  onSetWhitePromotedPiece(PromotedPiece promotedPiece) {
     if (_selectedPiece != null) {
       final piece = _selectedPiece!;
       if (piece.type == ChessPieceType.pawn &&
@@ -549,5 +562,26 @@ class GameResolver {
     }
 
     whitePromote = false;
+  }
+
+  onResetBoard() {
+    _whiteCastlingRights = CastlingRights.both;
+    _blackCastlingRights = CastlingRights.both;
+
+    _whiteLastPawnTowSquares = null;
+    _blackLastPawnTowSquares = null;
+
+    _initial();
+  }
+
+  _initial() {
+    _pieces = ChessHelper.initialPieces();
+    _selectedPiece;
+    _possibleMoves = [];
+    _whiteDeadPieces = [];
+    _blackDeadPieces = [];
+    whitePromote = false;
+    isWhiteKingInThreate = false;
+    isBlackKingInThreate = false;
   }
 }

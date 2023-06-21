@@ -2,7 +2,7 @@
 part of 'game_pool_bloc.dart';
 
 class GamePoolState extends Equatable {
-  const GamePoolState._({
+  const GamePoolState({
     required this.pieces,
     required this.selectedPiece,
     required this.possibleMoves,
@@ -34,15 +34,16 @@ class GamePoolState extends Equatable {
         isBlackKingInThreate,
       ];
 
-  factory GamePoolState.initial() => GamePoolState._(
-      pieces: ChessHelper.initialPieces(),
-      selectedPiece: null,
-      possibleMoves: const [],
-      whiteDeadPieces: const [],
-      blackDeadPieces: const [],
-      whitePromote: false,
-      isBlackKingInThreate: false,
-      isWhiteKingInThreate: false);
+  factory GamePoolState.initial() => GamePoolState(
+        pieces: ChessHelper.initialPieces(),
+        selectedPiece: null,
+        possibleMoves: const [],
+        whiteDeadPieces: const [],
+        blackDeadPieces: const [],
+        whitePromote: false,
+        isBlackKingInThreate: false,
+        isWhiteKingInThreate: false,
+      );
 
   GamePoolState copyWith({
     List<ChessPiece>? pieces,
@@ -54,7 +55,7 @@ class GamePoolState extends Equatable {
     bool? isBlackKingInThreate,
     bool? isWhiteKingInThreate,
   }) {
-    return GamePoolState._(
+    return GamePoolState(
       pieces: pieces ?? this.pieces,
       selectedPiece: selectedPiece,
       possibleMoves: possibleMoves ?? this.possibleMoves,

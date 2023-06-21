@@ -42,4 +42,30 @@ Qh6 Bf8 22. Qh8# 1-0
 23.Ng3 g6 24.Rad1 h5 25.h4 Qc8 26.Ngxe4 dxe4 27.Rd6 Kg7 28.Red1 Ng4 29.Qg3 Nh6
 30.Qg5 Qf5  1/2-1/2
 ''';
+
+  static const game3 = '''
+[Event "Live Chess"]
+[Site "Chess.com"]
+[Date "2023.06.20"]
+[Round "?"]
+[White "saleems"]
+[Black "yoseff96"]
+[Result "1-0"]
+[ECO "C23"]
+[WhiteElo "1331"]
+[BlackElo "1316"]
+[TimeControl "600"]
+[EndTime "15:27:17 PDT"]
+[Termination "saleems won by resignation"]
+
+1. e4 e5 2. Bc4 Nc6 3. c3 Nf6 4. d3 Bc5 5. b4 Bb6 6. a4 a6 7. b5 axb5 8. Bxb5 d6
+9. Nf3 O-O 10. O-O Qe7 11. Nbd2 d5 12. exd5 Nxd5 13. c4 Nc3 14. Qb3 Ne2+ 15. Kh1
+Bd4 16. Nxd4 Ncxd4 17. Qb2 c6 18. Qa2 cxb5 19. cxb5 Be6 20. Qa3 Qxa3 21. Bxa3
+Nc2 22. Ra2 Ncd4 23. Bxf8 Kxf8 24. Ra3 Nf4 25. Re1 Nde2 26. g3 Bd5+ 27. Ne4 Nh3
+28. Rxe2 f5 29. Kg2 fxe4 30. Kxh3 exd3 31. Rxd3 Bc4 32. Rf3+ Ke7 33. Rxe5+ Kd6
+34. Re4 Rxa4 35. Rff4 Be6+ 36. g4 Ra3+ 37. Kg2 Bd5 38. h4 Bxe4+ 39. Rxe4 Kc5 40.
+Re5+ Kd6 41. f4 Ra4 42. Kf3 h6 43. g5 hxg5 44. hxg5 g6 45. Re4 Ra3+ 46. Kg4 Ra5
+47. f5 gxf5+ 48. Kxf5 Rxb5+ 49. Kf6 Kd7 50. Re7+ Kd8 51. g6 Rb1 52. Re5 Rf1+ 53.
+Rf5 Rg1 54. Kf7 b6 55. g7 1-0
+''';
 }

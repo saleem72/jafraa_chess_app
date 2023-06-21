@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/domain/models/chess_game.dart';
 import '../../../../core/domain/models/chess_move.dart';
+import '../../../../core/domain/models/chess_piece.dart';
 import '../../../../core/domain/models/chess_piece_properties.dart';
+import '../../../game_pool.dart/domain/helpers/game_resolver.dart';
 
 part 'notations_list_event.dart';
 part 'notations_list_state.dart';
@@ -30,6 +32,17 @@ class NotationsListBloc extends Bloc<NotationsListEvent, NotationsListState> {
       final move = state.moves[selectedIndex + 1];
 
       add(_SetSelected(index: selectedIndex + 1));
+      return move;
+    }
+    return null;
+  }
+
+  ChessMove? previousMove() {
+    final selectedIndex = state.selectedMove;
+    if (selectedIndex > 0) {
+      final move = state.moves[selectedIndex - 1];
+
+      add(_SetSelected(index: selectedIndex - 1));
       return move;
     }
     return null;

@@ -14,12 +14,13 @@ class ChessBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: context.mediaQuery.size.width,
-        child: Stack(
-          children: const [
-            BoardBackground(),
-            ChessPiecesView(),
-          ],
-        ));
+      height: context.mediaQuery.size.width,
+      child: Stack(
+        children: const [
+          BoardBackground(),
+          ChessPiecesView(),
+        ],
+      ),
+    );
   }
 }
