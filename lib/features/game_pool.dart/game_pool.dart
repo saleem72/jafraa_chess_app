@@ -21,7 +21,8 @@ class GamePool extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: Column(
         children: [
-          const Spacer(flex: 1),
+          const SizedBox(height: 16),
+          _header(context),
           const OtherPlayer(playerName: ''),
           const SizedBox(height: 16),
           const WhiteDeadPiecesList(),
@@ -35,9 +36,9 @@ class GamePool extends StatelessWidget {
                   ChessPiecesView(),
                 ],
               )),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           const BlackDeadPiecesList(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
 
           TextButton(
             onPressed: () {
@@ -63,6 +64,21 @@ class GamePool extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  Widget _header(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: 56,
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: () => context.navigator.pop(),
+            icon: const Icon(Icons.arrow_back),
+          ),
         ],
       ),
     );

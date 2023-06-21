@@ -30,6 +30,11 @@ class LandingScreen extends StatelessWidget {
               onTap: () => context.navigator.pushNamed(AppScreen.pngScreen),
               label: 'PNG Reader',
             ),
+            const SizedBox(height: 24),
+            AppButton(
+              onTap: () => context.navigator.pushNamed(AppScreen.gamePool),
+              label: 'Game pool',
+            ),
           ],
         ),
       ),
